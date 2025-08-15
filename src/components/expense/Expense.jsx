@@ -117,7 +117,7 @@ const Expense = () => {
   };
 
   return (
-    <div className="max-w-screen-xl mx-auto  py-8 mt-16">
+    <div className="max-w-screen-xl mx-auto  py-8 mt-12">
       {/* Top row: Chart (left) + Totals card (right) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         {/* Chart card */}
