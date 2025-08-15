@@ -65,10 +65,23 @@ const ExpenseTable = ({
                         <span className="font-medium">৳{exp.amount}</span>
                       </td>
                       <td>
-                        <span className="badge badge-primary">
+                        <span
+                          className={`badge ${
+                            exp.category === "Food"
+                              ? "badge-error" // red
+                              : exp.category === "Transport"
+                              ? "badge-warning" // yellow
+                              : exp.category === "Shopping"
+                              ? "badge-info" // blue
+                              : exp.category === "Grocery"
+                              ? "badge-success" // green
+                              : "badge-neutral" // default gray
+                          }`}
+                        >
                           {exp.category}
                         </span>
                       </td>
+
                       <td>{formatDate(exp.date)}</td>
                       <td>
                         <div className="flex gap-3 justify-center">
