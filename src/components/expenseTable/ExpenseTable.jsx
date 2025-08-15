@@ -11,7 +11,12 @@ import DeleteModal from "../deleteModal/DeleteModal";
  *
  * Fixed categories: Food, Transport, Shopping, Grocery
  */
-const ExpenseTable = ({ filtered, setDeleteExpenses }) => {
+const ExpenseTable = ({
+  filtered,
+  setDeleteExpenses,
+  setIsAddOpen,
+  setExpensesDetails,
+}) => {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   const formatDate = (iso) => {
@@ -69,6 +74,9 @@ const ExpenseTable = ({ filtered, setDeleteExpenses }) => {
                         <div className="flex gap-3 justify-center">
                           {/* Edit */}
                           <button
+                            onClick={() => {
+                              setExpensesDetails(exp), setIsAddOpen(true);
+                            }}
                             className="btn btn-ghost btn-xs p-1"
                             title="Edit"
                           >

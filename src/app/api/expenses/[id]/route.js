@@ -22,3 +22,38 @@ export async function DELETE(request, { params }) {
     return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }
+
+export async function PUT(request, { params }) {
+  const { id } = params;
+
+  try {
+    await connectDB();
+    const data = await request.json();
+
+    const updated = await Expense.findByIdAndUpdate(
+      id,
+      {
+        title: data.title,
+        amount: data.amount,
+        category: data.category,
+        date: data.date,
+      },
+      { new: true, runValidators: true } // returns updated doc and runs schema validation
+    );
+
+    if (!updated) {
+      return NextResponse.json(
+        { message: "Expense not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      message: "Expense updated successfully",
+      expense: updated,
+    });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ message: "Server error" }, { status: 500 });
+  }
+}

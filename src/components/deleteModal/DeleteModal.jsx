@@ -4,6 +4,7 @@ const DeleteModal = ({ isOpen, onClose, title, id, setDeleteExpenses }) => {
   if (!isOpen) return null;
 
   const handleDeleteExpense = async (id) => {
+    setDeleteExpenses(false);
     try {
       const response = await fetch(`/api/expenses/${id}`, {
         method: "DELETE",

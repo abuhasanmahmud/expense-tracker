@@ -8,6 +8,7 @@ const Expense = () => {
   const [deleteExpenses, setDeleteExpenses] = useState(false);
   const [addExpenses, setAddExpenses] = useState(false);
   const [updateExpenses, setUpdateExpenses] = useState(false);
+  const [expensesDetails, setExpensesDetails] = useState({});
 
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -105,6 +106,8 @@ const Expense = () => {
         <ExpenseTable
           filtered={filtered}
           setDeleteExpenses={setDeleteExpenses}
+          setIsAddOpen={setIsAddOpen}
+          setExpensesDetails={setExpensesDetails}
         />
       )}
 
@@ -117,6 +120,8 @@ const Expense = () => {
           CATEGORIES={CATEGORIES}
           setAddExpenses={setAddExpenses}
           setUpdateExpenses={setUpdateExpenses}
+          expensesDetails={expensesDetails}
+          setExpensesDetails={setExpensesDetails}
         />
       )}
     </div>
