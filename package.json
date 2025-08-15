@@ -9,9 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "daisyui": "^5.0.50",
+    "next": "15.4.6",
     "react": "19.1.0",
+    "react-datepicker": "^8.4.0",
     "react-dom": "19.1.0",
-    "next": "15.4.6"
+    "react-hook-form": "^7.62.0",
+    "react-icons": "^5.5.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
