@@ -9,7 +9,7 @@ import Expense from "../model/expense.model";
 export async function getExpenses() {
   await connectDB();
 
-  const expenses = await Expense.find(query)
+  const expenses = await Expense.find()
     .sort({ date: -1, createdAt: -1 })
     .lean();
   return expenses;
@@ -35,7 +35,7 @@ export async function createExpense({ title, amount, category, date }) {
  * Update an expense by ID
  */
 export async function updateExpense(id, { title, amount, category, date }) {
-  await connect();
+  await connectDB();
 
   const updateData = {};
   if (title) {
@@ -92,7 +92,7 @@ export async function updateExpense(id, { title, amount, category, date }) {
  * Delete an expense by ID
  */
 export async function deleteExpense(id) {
-  await connect();
+  await connectDB();
   const deleted = await Expense.findByIdAndDelete(id).lean();
   if (!deleted) {
     const err = new Error("Expense not found");
