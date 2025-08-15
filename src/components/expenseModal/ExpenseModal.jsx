@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const ExpenseModal = ({
   isAddOpen,
@@ -19,19 +20,31 @@ const ExpenseModal = ({
     reset,
     setValue,
     formState: { errors, isSubmitting },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      title: "",
+      amount: "",
+      category: CATEGORIES[0],
+      date: null,
+    },
+  });
 
-  // Prefill form if updating
+  // Prefill form if updating; otherwise reset to defaults
   useEffect(() => {
-    if (expensesDetails) {
-      setValue("title", expensesDetails.title);
-      setValue("amount", expensesDetails.amount);
-      setValue("category", expensesDetails.category);
-      setValue(
-        "date",
-        expensesDetails.date ? new Date(expensesDetails.date) : new Date()
-      );
+    // consider update mode only when we have an actual expense object (check _id)
+    if (expensesDetails && expensesDetails._id) {
+      setValue("title", expensesDetails.title ?? "");
+      setValue("amount", expensesDetails.amount ?? "");
+      setValue("category", expensesDetails.category ?? CATEGORIES[0]);
+      // if there's a valid date string or Date, set Date object; otherwise null
+      const d =
+        expensesDetails.date &&
+        !Number.isNaN(new Date(expensesDetails.date).getTime())
+          ? new Date(expensesDetails.date)
+          : null;
+      setValue("date", d);
     } else {
+      // Add mode or cleared details
       reset({
         title: "",
         amount: "",
@@ -42,46 +55,34 @@ const ExpenseModal = ({
   }, [expensesDetails, setValue, reset, CATEGORIES]);
 
   const onSubmit = async (data) => {
-    // Prepare expense object
     const expensePayload = {
       title: String(data.title).trim(),
       amount: Number(data.amount),
       category: data.category || "Uncategorized",
-      date:
-        data.date instanceof Date
-          ? data.date.toISOString()
-          : new Date().toISOString(),
+      date: data.date instanceof Date ? data.date.toISOString() : null,
     };
 
     try {
-      let response, result;
-
-      if (expensesDetails?._id) {
+      if (expensesDetails && expensesDetails._id) {
         setUpdateExpenses(false);
-        // Update existing expense
-        response = await fetch(`/api/expenses/${expensesDetails._id}`, {
+        const res = await fetch(`/api/expenses/${expensesDetails._id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(expensePayload),
         });
-        result = await response.json();
-
-        if (!response.ok) throw new Error(result.error || "Failed to update");
-
-        setUpdateExpenses(true); // trigger parent refresh
+        const result = await res.json();
+        if (!res.ok) throw new Error(result.error || "Failed to update");
+        setUpdateExpenses(true);
       } else {
-        // Add new expense
         setAddExpenses(false);
-        response = await fetch("/api/expenses", {
+        const res = await fetch("/api/expenses", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(expensePayload),
         });
-        result = await response.json();
-
-        if (!response.ok) throw new Error(result.error || "Failed to create");
-
-        setAddExpenses(true); // trigger parent refresh
+        const result = await res.json();
+        if (!res.ok) throw new Error(result.error || "Failed to create");
+        setAddExpenses(true);
       }
 
       reset();
@@ -98,7 +99,7 @@ const ExpenseModal = ({
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">
-            {expensesDetails ? "Update" : "Add"} Expense
+            {expensesDetails && expensesDetails._id ? "Update" : "Add"} Expense
           </h3>
           <button
             onClick={() => {
@@ -187,6 +188,7 @@ const ExpenseModal = ({
               rules={{
                 required: "Date is required",
                 validate: (value) => {
+                  if (value === null) return "Date is required";
                   if (!(value instanceof Date)) return "Date must be valid";
                   if (Number.isNaN(value.getTime()))
                     return "Date must be valid";
@@ -228,10 +230,10 @@ const ExpenseModal = ({
               disabled={isSubmitting}
             >
               {isSubmitting
-                ? expensesDetails
+                ? expensesDetails && expensesDetails._id
                   ? "Updating..."
                   : "Adding..."
-                : expensesDetails
+                : expensesDetails && expensesDetails._id
                 ? "Update"
                 : "Add"}
             </button>

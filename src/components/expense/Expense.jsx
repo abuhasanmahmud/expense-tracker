@@ -117,7 +117,7 @@ const Expense = () => {
   };
 
   return (
-    <div className="max-w-screen-xl mx-auto  py-8">
+    <div className="max-w-screen-xl mx-auto  py-8 mt-16">
       {/* Top row: Chart (left) + Totals card (right) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         {/* Chart card */}
@@ -180,9 +180,6 @@ const Expense = () => {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold">Expense Table</h1>
-          <p className="text-sm text-gray-500">
-            Filter expenses by category only
-          </p>
         </div>
 
         <div className="flex items-center gap-3">
