@@ -1,16 +1,8 @@
 "use client";
-import React, { useMemo, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import React, { useState } from "react";
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import DeleteModal from "../deleteModal/DeleteModal";
 
-/**
- * ExpenseTable (category-only filtering with react-hook-form + datepicker)
- *
- * Fixed categories: Food, Transport, Shopping, Grocery
- */
 const ExpenseTable = ({
   filtered,
   setDeleteExpenses,
@@ -18,21 +10,19 @@ const ExpenseTable = ({
   setExpensesDetails,
 }) => {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null); // <-- which expense to delete
 
   const formatDate = (iso) => {
     if (!iso) return "";
-    try {
-      const d = new Date(iso);
-      if (Number.isNaN(d.getTime())) return "";
-      return d.toLocaleDateString(undefined, {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      });
-    } catch {
-      return "";
-    }
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return "";
+    return d.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
   };
+
   return (
     <>
       <div className="mt-8 card bg-base-100 shadow-sm">
@@ -68,27 +58,27 @@ const ExpenseTable = ({
                         <span
                           className={`badge ${
                             exp.category === "Food"
-                              ? "badge-error" // red
+                              ? "badge-error"
                               : exp.category === "Transport"
-                              ? "badge-warning" // yellow
+                              ? "badge-warning"
                               : exp.category === "Shopping"
-                              ? "badge-info" // blue
+                              ? "badge-info"
                               : exp.category === "Grocery"
-                              ? "badge-success" // green
-                              : "badge-neutral" // default gray
+                              ? "badge-success"
+                              : "badge-neutral"
                           }`}
                         >
                           {exp.category}
                         </span>
                       </td>
-
                       <td>{formatDate(exp.date)}</td>
                       <td>
                         <div className="flex gap-3 justify-center">
                           {/* Edit */}
                           <button
                             onClick={() => {
-                              setExpensesDetails(exp), setIsAddOpen(true);
+                              setExpensesDetails(exp);
+                              setIsAddOpen(true);
                             }}
                             className="btn btn-ghost btn-xs p-1"
                             title="Edit"
@@ -98,21 +88,16 @@ const ExpenseTable = ({
 
                           {/* Delete */}
                           <button
-                            onClick={() => setIsDeleteOpen(true)}
+                            onClick={() => {
+                              setDeleteTarget(exp);
+                              setIsDeleteOpen(true);
+                            }}
                             className="btn btn-error btn-xs p-1"
                             title="Delete"
                           >
                             <FaTrash className="w-4 h-4 text-white" />
                           </button>
                         </div>
-
-                        <DeleteModal
-                          isOpen={isDeleteOpen}
-                          onClose={() => setIsDeleteOpen(false)}
-                          title={exp.title}
-                          id={exp._id}
-                          setDeleteExpenses={setDeleteExpenses}
-                        />
                       </td>
                     </tr>
                   ))
@@ -122,6 +107,18 @@ const ExpenseTable = ({
           </div>
         </div>
       </div>
+
+      {/* ONE modal for the whole table */}
+      <DeleteModal
+        isOpen={isDeleteOpen}
+        onClose={() => {
+          setIsDeleteOpen(false);
+          setDeleteTarget(null);
+        }}
+        title={deleteTarget?.title}
+        id={deleteTarget?._id}
+        setDeleteExpenses={setDeleteExpenses}
+      />
     </>
   );
 };

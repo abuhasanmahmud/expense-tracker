@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function DELETE(request, { params }) {
   const { id } = params;
+  // console.log(`Deleting expense with ID in route: ${id}`);
 
   try {
     await connectDB();

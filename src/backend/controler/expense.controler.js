@@ -9,9 +9,8 @@ import Expense from "../model/expense.model";
 export async function getExpenses() {
   await connectDB();
 
-  const expenses = await Expense.find()
-    .sort({ date: -1, createdAt: -1 })
-    .lean();
+  const expenses = await Expense.find().sort({ createdAt: -1 });
+
   return expenses;
 }
 

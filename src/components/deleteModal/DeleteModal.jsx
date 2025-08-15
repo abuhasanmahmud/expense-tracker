@@ -3,8 +3,10 @@ import React, { useState } from "react";
 const DeleteModal = ({ isOpen, onClose, title, id, setDeleteExpenses }) => {
   if (!isOpen) return null;
   const [loading, setLoading] = useState(false);
+  console.log(`DeleteModal opened for ID: ${id}`);
 
   const handleDeleteExpense = async (id) => {
+    console.log(`Deleting expense with ID: ${id}`);
     setDeleteExpenses(false);
     setLoading(true);
     try {
