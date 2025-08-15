@@ -2,7 +2,13 @@
 import React, { useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import DatePicker from "react-datepicker";
-const ExpenseModal = ({ isAddOpen, setIsAddOpen, CATEGORIES }) => {
+const ExpenseModal = ({
+  isAddOpen,
+  setIsAddOpen,
+  CATEGORIES,
+  setAddExpenses,
+  setUpdateExpenses,
+}) => {
   const {
     register,
     handleSubmit,
@@ -39,6 +45,7 @@ const ExpenseModal = ({ isAddOpen, setIsAddOpen, CATEGORIES }) => {
       if (!response.ok)
         throw new Error(result.error || "Failed to create expense");
 
+      setAddExpenses(true);
       // Reset the form
       reset({
         title: "",

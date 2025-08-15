@@ -3,13 +3,17 @@ import React, { useMemo, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { FaTrash, FaPencilAlt } from "react-icons/fa";
+import DeleteModal from "../deleteModal/DeleteModal";
 
 /**
  * ExpenseTable (category-only filtering with react-hook-form + datepicker)
  *
  * Fixed categories: Food, Transport, Shopping, Grocery
  */
-const ExpenseTable = ({ filtered }) => {
+const ExpenseTable = ({ filtered, setDeleteExpenses }) => {
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
   const formatDate = (iso) => {
     if (!iso) return "";
     try {
@@ -49,7 +53,7 @@ const ExpenseTable = ({ filtered }) => {
                   </tr>
                 ) : (
                   filtered.map((exp, idx) => (
-                    <tr key={exp.id} className="hover">
+                    <tr key={exp._id} className="hover">
                       <th>{idx + 1}</th>
                       <td>{exp.title}</td>
                       <td>
@@ -62,16 +66,32 @@ const ExpenseTable = ({ filtered }) => {
                       </td>
                       <td>{formatDate(exp.date)}</td>
                       <td>
-                        <div className="flex justify-end gap-2">
-                          <button className="btn btn-ghost btn-xs">View</button>
-                          <button className="btn btn-ghost btn-xs">Edit</button>
+                        <div className="flex gap-3 justify-center">
+                          {/* Edit */}
                           <button
-                            onClick={() => handleDelete(exp.id)}
-                            className="btn btn-error btn-xs text-white"
+                            className="btn btn-ghost btn-xs p-1"
+                            title="Edit"
                           >
-                            Delete
+                            <FaPencilAlt className="w-4 h-4" />
+                          </button>
+
+                          {/* Delete */}
+                          <button
+                            onClick={() => setIsDeleteOpen(true)}
+                            className="btn btn-error btn-xs p-1"
+                            title="Delete"
+                          >
+                            <FaTrash className="w-4 h-4 text-white" />
                           </button>
                         </div>
+
+                        <DeleteModal
+                          isOpen={isDeleteOpen}
+                          onClose={() => setIsDeleteOpen(false)}
+                          title={exp.title}
+                          id={exp._id}
+                          setDeleteExpenses={setDeleteExpenses}
+                        />
                       </td>
                     </tr>
                   ))

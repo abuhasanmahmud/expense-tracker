@@ -5,6 +5,9 @@ import ExpenseModal from "../expenseModal/ExpenseModal";
 
 const Expense = () => {
   const CATEGORIES = ["Food", "Transport", "Shopping", "Grocery"];
+  const [deleteExpenses, setDeleteExpenses] = useState(false);
+  const [addExpenses, setAddExpenses] = useState(false);
+  const [updateExpenses, setUpdateExpenses] = useState(false);
 
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -29,7 +32,7 @@ const Expense = () => {
     };
 
     fetchExpenses();
-  }, []);
+  }, [deleteExpenses, addExpenses, updateExpenses]);
 
   const handleResetFiltering = () => {
     setCategoryFilter("All");
@@ -99,7 +102,10 @@ const Expense = () => {
       {loading ? (
         <p className="mt-6 text-center text-gray-500">Loading expenses...</p>
       ) : (
-        <ExpenseTable filtered={filtered} setExpensesList={setExpensesList} />
+        <ExpenseTable
+          filtered={filtered}
+          setDeleteExpenses={setDeleteExpenses}
+        />
       )}
 
       {/* Add Expense Modal */}
@@ -109,6 +115,8 @@ const Expense = () => {
           setIsAddOpen={setIsAddOpen}
           setExpensesList={setExpensesList}
           CATEGORIES={CATEGORIES}
+          setAddExpenses={setAddExpenses}
+          setUpdateExpenses={setUpdateExpenses}
         />
       )}
     </div>
